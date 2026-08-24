@@ -1,0 +1,76 @@
+{
+  "name": "@sparepartslabs/react-analytics-sdk",
+  "version": "0.1.0",
+  "description": "Modular React analytics and end-user feedback for Spare Parts",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "feedback.css",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./feedback": {
+      "types": "./dist/feedback/index.d.ts",
+      "import": "./dist/feedback/index.js"
+    },
+    "./feedback.css": "./feedback.css"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "vite --config examples/react-feedback/vite.config.ts",
+    "prepack": "npm run typecheck && npm test && npm run build",
+    "pack:check": "npm pack --dry-run"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^25.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/sparepartslabs/react-analytics-sdk#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sparepartslabs/react-analytics-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sparepartslabs/react-analytics-sdk/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": [
+    "feedback.css"
+  ],
+  "keywords": [
+    "react",
+    "typescript",
+    "analytics",
+    "feedback",
+    "spareparts"
+  ]
+}
