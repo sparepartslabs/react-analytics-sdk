@@ -1,0 +1,4 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { submitFeedback } from "../src/feedback/submit";
+afterEach(()=>vi.restoreAllMocks());
+describe("feedback submission",()=>{it("uses a restricted publishable key and preserves idempotency",async()=>{const fetch=vi.spyOn(globalThis,"fetch").mockResolvedValue(new Response(JSON.stringify({submission_id:"s1",status:"accepted"}),{status:202,headers:{"content-type":"application/json"}}));await submitFeedback({publishableKey:"sp_pub_test",endpoint:"http://localhost:8000"},{title:"Broken",description:"It broke",category:"bug"},"00000000-0000-4000-8000-000000000001");const [,init]=fetch.mock.calls[0];expect((init?.headers as Record<string,string>)["X-SpareParts-Publishable-Key"]).toBe("sp_pub_test");expect(JSON.parse(String(init?.body)).idempotency_key).toContain("00000000")})});
