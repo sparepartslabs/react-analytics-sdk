@@ -21,7 +21,12 @@ const spareParts = createSpareParts();
 
 export function App() {
   return <SparePartsProvider client={spareParts}>
-    <FeedbackProvider config={{ publishableKey: "sp_pub_...", theme: "auto", classes: { root: "my-feedback" } }}>
+    <FeedbackProvider config={{
+      publishableKey: "sp_pub_...",
+      theme: "auto",
+      classes: { root: "my-feedback" },
+      screenshots: { enabled: true },
+    }}>
       <YourApplication />
       <FeedbackLauncher>Send feedback</FeedbackLauncher>
     </FeedbackProvider>
@@ -30,6 +35,27 @@ export function App() {
 ```
 
 The module also exports `useFeedback()` and `openFeedback()` for custom launchers.
+
+### Screenshot attachments
+
+Screenshots are disabled by default. Opt in with `screenshots: { enabled: true }`. Users can review previews, remove files, follow upload progress, and retry failures without losing their written feedback.
+
+The platform accepts PNG, JPEG, and WebP images, with at most 5 screenshots and 10 MiB per file. A host can apply stricter limits:
+
+```tsx
+<FeedbackProvider config={{
+  publishableKey: "sp_pub_...",
+  screenshots: { enabled: true, maxCount: 3, maxSizeBytes: 5 * 1024 * 1024 },
+}}>
+  <App />
+</FeedbackProvider>
+```
+
+Host limits cannot raise platform limits. Invalid types, empty files, oversized files, duplicates, and excess files are rejected before upload. Feedback submission waits until every remaining screenshot is ready; failed files can be retried or removed.
+
+Uploads use the existing browser-safe `sp_pub_` key to request short-lived managed upload authorization. Image bytes go directly to managed storage. Feedback requests and intake issues contain opaque attachment references only—never raw bytes, base64 images, storage credentials, or unrestricted object URLs. Developers do not configure storage credentials.
+
+Existing configurations without `screenshots`, including text-only submissions, continue unchanged.
 
 ## Styling
 
@@ -49,6 +75,6 @@ The default stylesheet is optional. Override namespaced variables from global CS
 }
 ```
 
-Pass `classes` for stable application hooks. `theme` accepts `light`, `dark`, or `auto`. Use `portalTarget` to select an overlay root, or `disablePortal` for an inline surface. The default portal under `document.body` avoids clipping and stacking-context failures.
+Pass `classes` for stable application hooks. `theme` accepts `light`, `dark`, or `auto`. Use `portalTarget` to select an overlay root, or `disablePortal` for an inline surface. The default portal under `document.body` avoids clipping and stacking-context failures. Attachment styles remain namespaced under `.sp-feedback`; the root continues to own the top-level z-index.
 
-Publishable keys are browser-visible credentials restricted to `feedback:create`; they cannot read workspace data or invoke other Spare Parts APIs.
+Publishable keys are browser-visible credentials restricted to feedback creation and attachment upload; they cannot read workspace data or invoke unrelated Spare Parts APIs.

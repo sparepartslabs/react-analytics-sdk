@@ -8,3 +8,10 @@ coverage/
 .sp/feature.json
 specs/
 *.tgz
+
+# Spare Parts engineering context: regenerable output and per-run state.
+/.sp/execute/
+/.sp/feature.json
+**/.sp/traces.db*
+/.sp/scripts/
+/.sp/templates/
