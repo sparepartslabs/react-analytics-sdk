@@ -1,0 +1,11 @@
+node_modules/
+coverage/
+examples/
+tests/
+specs/
+.sp/
+.agents/
+.github/
+.env*
+*.log
+*.tgz
