@@ -125,7 +125,7 @@ export function FeedbackForm({ config, onClose }: { config: FeedbackConfig; onCl
     <label>What happened?<input autoFocus required maxLength={200} value={title} onChange={(e) => setTitle(e.target.value)} /></label>
     <label>Details<textarea required maxLength={10000} rows={6} value={description} onChange={(e) => setDescription(e.target.value)} /></label>
     <label>Type<select value={category} onChange={(e) => setCategory(e.target.value as FeedbackCategory)}><option value="bug">Bug</option><option value="idea">Idea</option><option value="other">Other</option></select></label>
-    {screenshotsEnabled && limits && <section className="sp-feedback__attachments" aria-labelledby={`${helpId}-label`}>
+    {screenshotsEnabled && limits && <section className="sp-feedback__attachments">
       <label id={`${helpId}-label`} htmlFor={`${helpId}-input`}>Screenshots</label>
       <p className="sp-feedback__attachment-help" id={helpId}>PNG, JPEG, or WebP. Up to {limits.maxCount} files, {formatBytes(limits.maxSizeBytes)} each.</p>
       <input id={`${helpId}-input`} aria-describedby={helpId} type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={chooseFiles} />
