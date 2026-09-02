@@ -20,7 +20,7 @@ async function json(response: Response): Promise<unknown> { try { return await r
 function isAcceptedType(value: string): value is FeedbackAttachmentMimeType { return FEEDBACK_ATTACHMENT_MIME_TYPES.includes(value as FeedbackAttachmentMimeType); }
 
 export async function fetchAttachmentLimits(config: FeedbackConfig, signal?: AbortSignal): Promise<EffectiveScreenshotLimits> {
-  const response = await fetch(`${baseUrl(config)}/public/v1/feedback/attachments/limits`, { headers: apiHeaders(config), signal });
+  const response = await fetch(`${baseUrl(config)}/v1/public/feedback/attachments/limits`, { headers: apiHeaders(config), signal });
   if (!response.ok) throw new Error(safeMessage(response.status, "limit lookup"));
   const body = await json(response);
   if (!isRecord(body) || !Number.isInteger(body.max_count) || Number(body.max_count) <= 0 || !Number.isInteger(body.max_size_bytes) || Number(body.max_size_bytes) <= 0 || !Array.isArray(body.accepted_types) || !body.accepted_types.every((type) => typeof type === "string" && isAcceptedType(type))) throw new Error("The feedback service returned invalid screenshot limits.");
@@ -28,7 +28,7 @@ export async function fetchAttachmentLimits(config: FeedbackConfig, signal?: Abo
 }
 
 export async function authorizeFeedbackScreenshot(config: FeedbackConfig, file: File, signal?: AbortSignal): Promise<FeedbackAttachmentAuthorization> {
-  const response = await fetch(`${baseUrl(config)}/public/v1/feedback/attachments`, { method: "POST", headers: apiHeaders(config), signal, body: JSON.stringify({ filename: file.name, content_type: file.type, byte_size: file.size }) });
+  const response = await fetch(`${baseUrl(config)}/v1/public/feedback/attachments`, { method: "POST", headers: apiHeaders(config), signal, body: JSON.stringify({ filename: file.name, content_type: file.type, byte_size: file.size }) });
   if (!response.ok) throw new Error(safeMessage(response.status, "authorization"));
   const body = await json(response);
   if (!isRecord(body) || typeof body.id !== "string" || !isRecord(body.upload) || typeof body.upload.url !== "string" || body.upload.method !== "PUT" || (body.upload.headers !== undefined && !isRecord(body.upload.headers))) throw new Error("The feedback service returned invalid upload authorization.");
@@ -54,7 +54,7 @@ export function transferFeedbackScreenshot(file: File, upload: ManagedUploadRequ
 }
 
 export async function finalizeFeedbackScreenshot(config: FeedbackConfig, attachmentId: string, file: File, signal?: AbortSignal): Promise<FeedbackAttachmentDescriptor> {
-  const response = await fetch(`${baseUrl(config)}/public/v1/feedback/attachments/${encodeURIComponent(attachmentId)}/finalize`, { method: "POST", headers: apiHeaders(config), signal });
+  const response = await fetch(`${baseUrl(config)}/v1/public/feedback/attachments/${encodeURIComponent(attachmentId)}/finalize`, { method: "POST", headers: apiHeaders(config), signal });
   if (!response.ok) throw new Error(safeMessage(response.status, "finalization"));
   const body = await json(response);
   if (!isRecord(body) || body.id !== attachmentId || body.status !== "ready" || body.filename !== file.name || body.content_type !== file.type || body.byte_size !== file.size || !isAcceptedType(String(body.content_type))) throw new Error("The feedback service returned an invalid finalized attachment.");
